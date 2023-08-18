@@ -33,7 +33,29 @@ URL
 
 ## Server Configuration
 - vi /etc/nginx/sites-available/default
-
+```
+server {
+  listen 80;
+  listen 443 ssl;
+  server_name 164.92.104.44;
+  ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;  
+  ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+  ssl_dhparam /etc/nginx/dhparam.pem;
+  location / {
+    proxy_pass http://localhost:5000;        
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffering off;
+    proxy_cache off;
+    proxy_redirect off;
+  }
+}
+```
 - nginx -t
 - service nginx restart
 
