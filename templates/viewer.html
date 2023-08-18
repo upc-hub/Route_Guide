@@ -1,0 +1,219 @@
+<!-- viewer.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        .center-table {
+            margin-left: auto;
+            margin-right: auto;
+            background-image: url('https://s3.ap-northeast-1.amazonaws.com/similarity.search.consumables.test/background.png');
+            background-size: 350px 900px;
+            width: 350px;
+            height: 900px;
+            overflow: hidden;
+        }
+	    .welcome-message {
+            position: absolute; /* Add absolute positioning */
+            top: 165px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+        }
+	    #see-streaming {
+            position: absolute;
+            top: 880px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 1; /* Ensure the button is above other elements */
+        }
+	    .comments-container {
+            position: absolute;
+            top: 560px;
+            left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
+		    /*display: flex; /* Use flexbox */
+            /*justify-content: center; /* Center the content horizontally */
+            /*align-items: center; /* Center the content vertically */
+            /*margin-left: auto;*/
+            /*margin-right: auto;*/
+            width: 251px; /* Set the desired fixed width */
+            height: 240px; /* Adjust the height as per your requirement */
+            overflow-y: auto; /* Enable vertical scrolling if needed */
+		    background-color: lightblue; /* Add background color */
+            padding-right: 50px; /* Add left padding */
+        }
+	    .login-button img {
+            position: absolute;
+            top: 220px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 1; /* Ensure the button is above other elements */
+            width: 120px; /* Adjust the width as per your requirement */
+            height: 28px; /* Adjust the height as per your requirement */
+        }
+        .iframe-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 20px; /* Add curved border */
+        }
+        .custom-iframe {
+            position: absolute;
+            top: 15px;    /* Adjust top position */
+            left: 25px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+            width: 300px;
+            height: 300px;
+            border: none;
+        }
+        .input-container {
+            position: relative;
+        }
+        #message {
+            position: absolute;
+            top: 110px;    /* Adjust top position */
+            left: 65px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+        }
+        #sendButton {
+            position: absolute;
+            top: 110px;   /* Adjust top position */
+            left: 215px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+        }
+        .button-container {
+            position: absolute;
+            top: 830px;   /* Adjust top position */
+            left: 90px;   /* Adjust left position */
+        }
+        .custom-button {
+            font-size: 14px;
+            margin: 5px; /* Add margin for spacing between buttons */
+        }
+	</style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	    <table class="center-table">
+        <tr>
+            <th>
+                <br><br><br>
+                <div class="welcome-message">
+                    <h2>Welcome,{{username}}さん</h2></div>
+                <div class="login-button">
+                <img src="https://s3.ap-northeast-1.amazonaws.com/similarity.search.consumables.test/saver.png" alt="Login as Saver">
+                </div>
+                <div class="iframe-container">
+                    <iframe src="http://164.92.104.44:8501" class="custom-iframe" frameborder="8" allow="camera; microphone"></iframe>
+                </div>
+                <button id="see-streaming" disabled>See Walker's condition</button>
+                <video id="video" autoplay></video>
+                <div class="comments-container">
+                    <div id="messages"></div>
+                </div>
+                <div class="input-container">
+                    <input type="text" id="message" placeholder="Enter your comment">
+                    <button id="sendButton" onclick="sendMessage()">Send</button>
+                </div>  
+                <br>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+                <script>
+                    const video = document.getElementById('video');
+                    const messageInput = document.getElementById('message');
+                    const messagesDiv = document.getElementById('messages');
+                    const seeStreamingButton = document.getElementById('see-streaming');
+
+                    const socket = io();
+
+                    let username = '{{ username }}';
+
+                    function sendMessage() {
+                        const message = messageInput.value;
+                        socket.emit('message', { username, content: message });
+                        messageInput.value = '';
+                    }
+        
+                    function sendLeft() {
+                    const message = 'left <i class="fas fa-arrow-circle-left"></i>';
+                        socket.emit('message', { username, content: message });
+                        messageInput.value = '';
+                    }
+
+                    function sendRight() {
+                        const message = 'right <i class="fas fa-arrow-circle-right"></i>';
+                        socket.emit('message', { username, content: message });
+                        messageInput.value = '';
+                    }
+
+                    function sendStraight() {
+                        const message = 'straight <i class="fas fa-arrow-circle-up"></i>';
+                        socket.emit('message', { username, content: message });
+                        messageInput.value = '';
+                    }
+
+                    function sendBack() {
+                        const message = 'back <i class="fas fa-arrow-circle-down"></i>';
+                        socket.emit('message', { username, content: message });
+                        messageInput.value = '';
+                    }
+
+                    socket.on('user_connected', user => {
+                        if (user.user_id !== socket.id) {
+                            const viewerLabel = document.createElement('p');
+                        <!--viewerLabel.textContent = `${user.username} started streaming their camera.`;-->
+                            viewerLabel.textContent = ``;
+                        messagesDiv.appendChild(viewerLabel);
+                        }
+                    });
+
+                    socket.on('message', message => {
+                        const messageElement = document.createElement('p');
+                        messageElement.innerHTML = `${message.username}さん : ${message.content}`;
+                        messagesDiv.appendChild(messageElement);
+                    });
+
+                    socket.on('stream_started', user => {
+                        if (user.user_id !== socket.id) {
+                            const viewerLabel = document.createElement('p');
+                            viewerLabel.textContent = `${user.username}さん started streaming camera.`;
+                            messagesDiv.appendChild(viewerLabel);
+                            seeStreamingButton.disabled = false; // Enable the "See Streaming" button
+                        }
+                    });
+
+                    socket.on('stream_stopped', user => {
+                        if (user.user_id !== socket.id) {
+                            const viewerLabel = document.createElement('p');
+                            viewerLabel.textContent = `${user.username}さん's camera stream has stopped.`;
+                            messagesDiv.appendChild(viewerLabel);
+                            seeStreamingButton.disabled = true; // Disable the "See Streaming" button
+                        }
+                    });
+
+                    seeStreamingButton.addEventListener('click', () => {
+                        // Perform the desired action when the "See Streaming" button is clicked
+                        // For example, display the streaming video or perform any other operation
+                        console.log("Viewing the streaming...");
+                    });
+                </script>
+                <br>
+                <div class="button-container">
+                    <button onclick="sendLeft()" class="custom-button">left <i class="fas fa-arrow-circle-left"></i></button>
+                    <button onclick="sendRight()" class="custom-button">right <i class="fas fa-arrow-circle-right"></i></button>
+                    <button onclick="sendStraight()" class="custom-button">straight <i class="fas fa-arrow-circle-up"></i></button>
+                    <button onclick="sendBack()" class="custom-button">back <i class="fas fa-arrow-circle-down"></i></button>
+                </div>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+            </th>
+        </tr>
+    </table>
+</body>
+</html>
