@@ -32,12 +32,8 @@ URL
 ```
 
 ## Server Configuration
-```
-vi /etc/nginx/sites-available/default
-```
-```
-nginx -t
-```
-```
-service nginx restart
-```
+- vi /etc/nginx/sites-available/default
+
+- nginx -t
+- service nginx restart
+
