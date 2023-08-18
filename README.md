@@ -5,5 +5,6 @@ It is about the system for helping the person, who lost the way by the helpers k
 ```
 Server
 - DigitalOcean
-- 8 GB Memory / 4 AMD vCPUs / 160 GB Disk / SFO3 - Ubuntu 18.04 (LTS) x64
+* 8 GB Memory / 4 AMD vCPUs / 160 GB Disk / SFO3 - Ubuntu 18.04 (LTS) x64
++ Thomas Jefferson
 ```
