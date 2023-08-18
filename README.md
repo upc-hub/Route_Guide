@@ -5,6 +5,18 @@ It is about the system for helping the person, who lost the way by the helpers k
 ```
 Server
 - DigitalOcean
-* 8 GB Memory / 4 AMD vCPUs / 160 GB Disk / SFO3 - Ubuntu 18.04 (LTS) x64
-+ Thomas Jefferson
+- 8 GB Memory / 4 AMD vCPUs / 160 GB Disk / SFO3 - Ubuntu 18.04 (LTS) x64
+
+Frontend
+- HTML, CSS, JavaScript
+
+Backend
+- PostgreSQL
+
+Framework
+- Flask Python Web framework
+- Nginx HTTP Web server
+
+URL
+- https://164.92.104.4
 ```
