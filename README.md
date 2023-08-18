@@ -11,6 +11,9 @@ Frontend
 - HTML, CSS, JavaScript
 
 Backend
+- Python
+
+Database
 - PostgreSQL
 
 Framework
