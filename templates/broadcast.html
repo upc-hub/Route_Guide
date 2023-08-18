@@ -1,0 +1,205 @@
+<!-- broadcast.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Broadcaster</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        .center-table {
+            margin-left: auto;
+            margin-right: auto;
+            background-image: url('https://s3.ap-northeast-1.amazonaws.com/similarity.search.consumables.test/background.png');
+            background-size: 350px 900px;
+            width: 350px;
+            height: 900px;
+            overflow: hidden;
+        }
+	    .welcome-message {
+		    position: absolute;
+            top: 165px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+        }
+	    .welcome-mess {
+            position: absolute;
+            top: 280px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+	    }
+	    .comments-container {
+            position: absolute;
+            top: 570px;
+            left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
+		    /*display: flex;  Use flexbox */
+            /*justify-content: center; /* Center the content horizontally */
+            /*align-items: center; /* Center the content vertically */
+            /*margin-left: auto;*/
+            /*margin-right: auto;*/
+            width: 251px; /* Set the desired fixed width */
+            height: 240px; /* Adjust the height as per your requirement */
+            overflow-y: auto; /* Enable vertical scrolling if needed */
+            background-color: lightblue; /* Add background color */
+		    padding-right: 50px; /* Add left padding */
+	    }
+	    #start-camera {
+            position: absolute;
+            top: 880px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-100%); /* Center horizontally */
+            z-index: 1; /* Ensure the button is above other elements */
+        }
+	    #stop-camera {
+            position: absolute;
+            top: 880px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(10%); /* Shift to the left by 50% of button width plus the margin */
+            z-index: 1; /* Ensure the button is above other elements */
+        }
+	    .login-button img {
+		    position: absolute;
+            top: 220px; /* Adjust the top position as per your requirement */
+            left: 50%; /* Align to the center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 1; /* Ensure the button is above other elements */
+            width: 120px; /* Adjust the width as per your requirement */
+            height: 28px; /* Adjust the height as per your requirement */
+        }
+        .iframe-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 20px; /* Add curved border */
+        }
+        .custom-iframe {
+            position: absolute;
+            top: 50px;    /* Adjust top position */
+            left: 25px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+            width: 300px;
+            height: 300px;
+            border: none;
+        }
+        .input-container {
+            position: relative;
+        }
+        #message {
+            position: absolute;
+            top: 130px;    /* Adjust top position */
+            left: 50px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+        }
+        #sendButton {
+            position: absolute;
+            top: 130px;   /* Adjust top position */
+            left: 200px;   /* Adjust left position */
+            /* You can also use right or bottom properties if needed */
+        }
+    </style>
+</head>
+<body>
+	<table class="center-table">
+        <tr>
+            <th>
+		        <div class="welcome-message"> 
+			        <h2>Welcome, {{ username }}さん</h2></div>
+                    <div class="login-button"><img src="https://s3.ap-northeast-1.amazonaws.com/similarity.search.consumables.test/Screenshot+2023-06-18+at+11.43.08.png" alt="Login as Walker"></div>
+                    <div class="iframe-container">
+                        <iframe src="http://164.92.104.44:8501" class="custom-iframe" frameborder="8" allow="camera; microphone"></iframe>
+                    </div>
+                    
+                    <button id="start-camera">Start Camera</button>
+                    <button id="stop-camera">Stop Camera</button>
+                    <br>
+                    <br>
+                    <video id="video" autoplay></video>
+                    <div class="comments-container">
+                        <div id="messages"></div></div>
+                    <br>
+                    <div class="input-container">
+                        <input type="text" id="message" placeholder="Enter your comment">
+                        <button id="sendButton" onclick="sendMessage()">Send</button>
+                    </div>                      
+                    <br>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+                    <script>
+                        const video = document.getElementById('video');
+                        const messageInput = document.getElementById('message');
+                        const messagesDiv = document.getElementById('messages');
+
+                        const socket = io();
+
+                        let username = '{{ username }}';
+                        let isStreaming = false;
+
+                        function startCamera() {
+                            navigator.mediaDevices.getUserMedia({ video: true })
+                                .then(mediaStream => {
+                                    video.srcObject = mediaStream;
+                                    socket.emit('start_stream', { username });
+                                    isStreaming = true;
+                                })
+                                .catch(error => console.error('Error accessing camera:', error));
+                        }
+
+                        function stopCamera() {
+                            if (video.srcObject) {
+                                video.srcObject.getTracks().forEach(track => track.stop());
+                                video.srcObject = null;
+                                socket.emit('stop_stream');
+                                isStreaming = false;
+                            }
+                        }
+
+                        function sendMessage() {
+                            const message = messageInput.value;
+                            socket.emit('message', { username, content: message });
+                            messageInput.value = '';
+                        }
+
+                        document.getElementById('start-camera').addEventListener('click', startCamera);
+                        document.getElementById('stop-camera').addEventListener('click', stopCamera);
+
+                        socket.on('user_connected', user => {
+                            if (user.user_id !== socket.id) {
+                                const viewerLabel = document.createElement('p');
+                            <!--viewerLabel.textContent = `${user.username} is watching the broadcast.`;-->
+                            viewerLabel.textContent = ``;
+                                messagesDiv.appendChild(viewerLabel);
+                            }
+                        });
+
+                        socket.on('message', message => {
+                            const messageElement = document.createElement('p');
+                            messageElement.innerHTML = `${message.username}さん : ${message.content}`;
+                            messagesDiv.appendChild(messageElement);
+                        });
+
+                        socket.on('stream_started', user => {
+                            if (user.user_id !== socket.id) {
+                                const viewerLabel = document.createElement('p');
+                                viewerLabel.textContent = `${user.username} started streaming their camera.`;
+                                messagesDiv.appendChild(viewerLabel);
+                            }
+                        });
+
+                        socket.on('stream_stopped', user => {
+                            if (user.user_id !== socket.id) {
+                                const viewerLabel = document.createElement('p');
+                                viewerLabel.textContent = `${user.username}'s camera stream has stopped.`;
+                                messagesDiv.appendChild(viewerLabel);
+                            }
+                        });
+                    </script>
+            
+            </th>
+        </tr>
+    </table>
+</body>
+</html>
