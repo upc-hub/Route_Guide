@@ -61,8 +61,7 @@ server {
 ## User Registration
 ![register](https://github.com/upc-hub/Route_Guide/assets/79504426/1f70d6ca-9594-46a0-a998-f263120f2ad3)
 
-## Login as a Walker
-
-## Login as a Helper
+## Login as a Walker and Helper
+![walker](https://github.com/upc-hub/Route_Guide/assets/79504426/8f31d4fb-2ba2-4f93-8335-71a52ec45fc0)
 
 ## Route Guiding
