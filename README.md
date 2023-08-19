@@ -58,4 +58,10 @@ server {
 ```
 - nginx -t
 - service nginx restart
+## User Registration
 
+## Login as a Walker
+
+## Login as a Helper
+
+## Route Guiding
