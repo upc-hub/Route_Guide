@@ -59,6 +59,7 @@ server {
 - nginx -t
 - service nginx restart
 ## User Registration
+<img width="686" alt="Screenshot 2023-08-19 at 20 53 51" src="https://github.com/upc-hub/Route_Guide/assets/79504426/fda8d128-07d6-4039-8c15-1d48800c10da">
 
 ## Login as a Walker
 
