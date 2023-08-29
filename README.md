@@ -66,3 +66,10 @@ server {
 
 ## Route Guiding
 <img width="1385" alt="Screenshot 2023-08-19 at 21 07 57" src="https://github.com/upc-hub/Route_Guide/assets/79504426/4239a6a5-d163-415d-a113-114ec3e21ec0">
+
+## Demonstration
+
+## Permission
+##Location Access
+
+##Audio and Video Access
