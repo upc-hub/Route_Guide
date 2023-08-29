@@ -70,6 +70,6 @@ server {
 ## Demonstration
 
 ## Permission
-###Location Access
+Location Access
 
-###Audio and Video Access
+Audio and Video Access
