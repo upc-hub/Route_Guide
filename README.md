@@ -69,7 +69,16 @@ server {
 
 ## Demonstration
 
-## Permission
-Location Access
+## Permission for Location and Audio/Video Access
+Google Chrome
+- go to chrome://flags/
+- search 'unsafely-treat-insecure-origin-as-secure' and enable it
+- add these address (http://164.92.104.44, http://164.92.104.44:8501) and relaunch
 
-Audio and Video Access
+Firefox
+- go to about:config
+- set true -> media.devices.insecure.enabled, media.getusermedia.insecure.enabled
+
+Safari
+- At computer, go to Developer tab
+- search WebRTC and allow Media capture on Insecure Sites
